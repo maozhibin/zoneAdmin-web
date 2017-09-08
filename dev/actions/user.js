@@ -21,7 +21,8 @@ export function login(data) {
         expiration: (new Date().getTime() + 30 * 24 * 3600 * 1000)
       }, {});
       dispatch({type: 'USER_UPDATE', data: user});
-      browserHistory.push('public');     
+      localStorage.setItem('token','123');      
+      browserHistory.push('public');
     } catch (e) {
       console.log(e);
     }
