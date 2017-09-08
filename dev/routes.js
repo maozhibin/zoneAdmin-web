@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { Route,IndexRoute } from 'react-router';
 import Index from './containers/Index';
 import Public from './containers/Public';
 import Login from './containers/Login';
@@ -10,6 +10,7 @@ import Module2Page2 from './containers/module2/Page2';
 
 export default (
   <Route path="/" component={Index}>
+    <IndexRoute component={Login}/>
     <Route path="public" component={Public}>
       <Route path="module1">
         <Route path="page1" component={Module1Page1} />
