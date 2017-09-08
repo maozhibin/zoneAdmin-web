@@ -1,0 +1,70 @@
+.hidden{  
+  display: none !important;
+}
+
+.mask1{
+  content: '';
+  display: block;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  left:0;
+  top:0;
+  background-color:rgba(0,0,0,0.35);
+}
+
+
+.dialog1{
+  position: fixed;
+  height: 100%;
+  width:100%;
+  z-index: 100;
+  top:0;
+  left:0;
+  >.area{
+    display: flex;
+    position: absolute;
+    z-index: 2;
+    width:72.267vw;
+    background-color: @bg-color1;
+    border: 1px solid @bg-color1;
+    border-radius: 0.8vw;
+    left:13.8665vw;
+    top:22.933vw;
+    padding:4vw 5.333vw 4.267vw;
+    flex-direction: column;
+    >.title{
+      color:@font-color2;
+      font-size:@font-size5;
+      text-align: center;
+      height: 9.6vw;
+    }
+    >.content{
+      flex: 1;
+    }
+    .close{
+      position: absolute;
+      width:3.733vw;
+      height: 3.733vw;
+      right: 4vw;
+      top:4.8vw;
+      .close1-icon;
+    }
+  }
+  &::before{
+    .mask1;
+  }
+}
+
+.radio{
+  width:6.4vw;
+  height: 6.4vw;
+  background: @bg-color1;
+  border:1px solid @border-color13;
+  border-radius: 50%;
+  display: block;
+}
+.radio.checked{
+  .radio-checked-icon;
+}

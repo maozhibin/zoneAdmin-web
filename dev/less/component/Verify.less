@@ -1,0 +1,59 @@
+.com-verify{
+  position: fixed;
+  height: 100%;
+  width:100%;
+  z-index: 100;
+  >.area{
+    >.content{
+      .phone{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        div{
+          color:@font-color5;
+          font-size:@font-size5;
+        }
+        a{
+          color:@font-color5;
+          font-size:@font-size10;
+          display: block;
+          text-align: center;
+          width:21.6vw;
+          line-height: 6.133vw;
+          border:1px solid @border-color3;
+          border-radius: 1.067vw;
+        }
+      }
+      .error-tip{
+        color:@font-color4;
+        font-size:@font-size10;
+        line-height: 8vw;
+        height: 8vw;
+      }
+      .input-box{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        div{
+          height: 13.333vw;
+          width: 13.333vw;
+          text-align: center;
+          line-height: 13.333vw;
+          border:1px solid @border-color3;
+        }
+        .checked{
+          border:1px solid @border-color4;
+        }
+      }
+    }
+    >.verify-input{
+      position: absolute;
+      width:0;
+      top:0;
+      opacity: 0;
+    }
+  }
+  &::before{
+    .mask1;
+  }
+}

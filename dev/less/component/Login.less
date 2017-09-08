@@ -1,0 +1,58 @@
+.com-login{
+  position: fixed;
+  height: 100%;
+  width:100%;
+  z-index: 100;
+  >.area{
+    >.content{
+      >.box{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 11.733vw;
+        border-bottom: 1px solid @border-color1;
+        input{
+          flex: 1;
+          height: 100%;
+        }
+        .cancel{
+          width:4.8vw;
+          height: 4.8vw;
+          .cancel1-icon;
+        }
+      }
+      >.rule{
+        margin-top: 3.733vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: @font-color13;
+        font-size: @font-size11;        
+        .radio-checked-icon{
+          width: 3.467vw;
+          height: 3.467vw;
+          margin-right: 2.933vw;
+        }
+        a{
+          font-size: @font-size11;
+          line-height: @font-size11;
+          color: #32AA50;
+        }
+      }
+      >.confirm{
+        margin-top:5.333vw;
+        display: block;
+        width:100%;
+        line-height: 11.733vw;
+        background: #32AA50;
+        border-radius: 1.067vw;
+        color:@font-color1;
+        font-size:4vw;
+        text-align: center;
+      }
+    }
+  }
+  &::before{
+    .mask1;
+  }
+}

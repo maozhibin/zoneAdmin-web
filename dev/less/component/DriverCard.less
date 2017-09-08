@@ -1,0 +1,61 @@
+.com-driver-card{
+  height: 24.533vw;
+  display: flex;
+  align-items: center;
+  background: @bg-color1;
+  >.avatar{
+    width:16vw;
+    height: 16vw;
+    border-radius: 50%;
+    margin:0 4vw;
+  }
+  >.info{
+    flex:1;
+    >div:nth-child(1){
+      color:@font-color9;
+      font-size:@font-size7;
+    }
+    >div:nth-child(2){
+      color:@font-color13;
+      font-size:@font-size9;
+    }
+    >div:nth-child(3){
+      display: flex;
+      >div:nth-child(1){
+        background: @bg-color5;
+        border-radius: 0.533vw;
+        height: 4.533vw;
+        align-items: center;
+        display: flex;
+        width:12.533vw;
+        >div{
+          border-left:1px solid @border-color12;
+          height: 100%;
+          line-height: 4.533vw;
+          text-align: center;
+          font-size:@font-size10;
+          color:@font-color1;
+          flex:1;
+        }
+        &::before{
+          content:'';
+          width:2.667vw;
+          height: 2.667vw;
+          .star1-icon;
+          margin:0 1.333vw;
+        }
+      }
+      >div:nth-child(2){
+        color:@bg-color6;
+        font-size:@font-size9;
+        margin-left: 2.133vw;
+      }
+    }
+  }
+  >.call{
+    width:11.733vw;
+    height: 11.733vw;
+    margin:0 4.8vw;
+    .phone1-icon;
+  }
+}

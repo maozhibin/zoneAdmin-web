@@ -1,0 +1,19 @@
+.annular(@radii,@border-color,@bg-color:@bg-color1){
+  content:'';
+  position: relative;
+  width:@radii*2;
+  height: @radii*2;
+  box-sizing: border-box;
+  border: @radii/2 solid @border-color;
+  border-radius: @radii;
+  &::before{
+    content: '';
+    position: absolute;
+    width:@radii;
+    height: @radii;
+    background: @bg-color;
+    border-radius: @radii/2;
+    top:@radii/2;
+    left:@radii/2;
+  }
+}
