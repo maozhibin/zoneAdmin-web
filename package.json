@@ -43,7 +43,7 @@
     "webpack-dev-server": "^2.1.0-beta.0"
   },
   "dependencies": {
-    "antd": "2.11.0",
+    "antd": "2.12.5",
     "caoh5-polyfill": "latest",
     "caoh5-request": "^3.0.3",
     "react": "^15.6.1",

@@ -14,32 +14,32 @@ class Public extends Component {
       current: 'home',
       open: 'module1'
     }
-    this.toggle=this.toggle.bind(this);
-    this.handleClick=this.handleClick.bind(this);
-    this.subMenuClick=this.subMenuClick.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.subMenuClick = this.subMenuClick.bind(this);
   }
   componentWillMount() {
-    this.initPage()
+    this.initPage();
   }
-  componentWillReceiveProps(nextProps){
-    this.initPage()
+  componentWillReceiveProps() {
+    this.initPage();
   }
-  initPage(){
-    if(!localStorage.token){
-      browserHistory.push('/login');  
-      return  
+  initPage() {
+    if (!window.localStorage.token) {
+      browserHistory.push('/login');
+      return false;
     }
-    let pathName = window.location.pathname;
+    const pathName = window.location.pathname;
     this.setState({
       open: pathName.split('/')[2],
       current: pathName
     });
   }
-  logout(){
-    localStorage.clear()
-    browserHistory.push('/login');      
+  logout() {
+    window.localStorage.clear();
+    browserHistory.push('/login');
   }
-  subMenuClick(e){
+  subMenuClick(e) {
     this.setState({
       open: e.key
     })
@@ -48,7 +48,7 @@ class Public extends Component {
     this.setState({
       current: e.key,
     });
-    browserHistory.push(e.key);    
+    browserHistory.push(e.key);
   }
   toggle() {
     this.setState({
@@ -57,7 +57,7 @@ class Public extends Component {
   }
   render() {
     const year = new Date().getFullYear();
-    const { children,location } = this.props;    
+    const { children } = this.props;
     return (
       <Layout className="components-layout">
         <Sider
@@ -85,7 +85,7 @@ class Public extends Component {
             </SubMenu>
           </Menu>
         </Sider>
-        <Layout style={{ marginLeft: this.state.collapsed ? 64 : 200 ,minHeight: '100vh'}}>
+        <Layout style={{ marginLeft: this.state.collapsed ? 64 : 200, minHeight: '100vh' }}>
           <Header style={{ background: '#fff', padding: 0 }}>
             <div className="userInfo">
               <Icon
@@ -127,6 +127,3 @@ export default connect(() => {
 }, {
   dispatch,
 })(Public);
-
-
-
