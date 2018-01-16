@@ -75,13 +75,14 @@ class Public extends Component {
             openKeys={[this.state.open]}
             selectedKeys={[this.state.current]}
           >
-            <SubMenu key="module1" onTitleClick={this.subMenuClick} title={<span><Icon type="mail" /><span>Module One</span></span>}>
-              <Menu.Item key="/public/module1/page1">Page 1</Menu.Item>
-              <Menu.Item key="/public/module1/page2">Page 2</Menu.Item>
+            <SubMenu key="module1" onTitleClick={this.subMenuClick} title={<span><Icon type="user" /><span>用户配置</span></span>}>
+            <Menu.Item key="/public/module1/useRexhibition">用户图形信息</Menu.Item>
+              <Menu.Item key="/public/module1/userList">用户列表</Menu.Item>
+              <Menu.Item key="/public/module1/ApplyUserList">申请升级会员列表</Menu.Item>
             </SubMenu>
-            <SubMenu key="module2" onTitleClick={this.subMenuClick} title={<span><Icon type="appstore" /><span>Module Two</span></span>}>
-              <Menu.Item key="/public/module2/page1">Page 1</Menu.Item>
-              <Menu.Item key="/public/module2/page2">Page 2</Menu.Item>
+
+            <SubMenu key="module2" onTitleClick={this.subMenuClick} title={<span><Icon type="copy" /><span>帖子配置</span></span>}>
+              <Menu.Item key="/public/module2/TwitterList">帖子列表列表</Menu.Item>
             </SubMenu>
           </Menu>
         </Sider>
@@ -115,7 +116,7 @@ class Public extends Component {
               {children}
             </div>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>{year} &copy; CAOCAO</Footer>
+          <Footer style={{ textAlign: 'center' }}>{year}内参圈</Footer>
         </Layout>
       </Layout>
     );

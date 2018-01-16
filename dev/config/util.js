@@ -2,6 +2,7 @@ import { proRequest } from 'caoh5-request';
 import { param } from './config';
 
 const proRes = async (data, dispatch) => {
+  data.url ="http://localhost:55670/"+data.url
   const json = await proRequest(Object.assign({}, data, {
     body: Object.assign({
       timestamp: new Date().getTime()

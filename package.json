@@ -45,8 +45,9 @@
   "dependencies": {
     "antd": "2.12.5",
     "caoh5-polyfill": "latest",
-    "caoh5-util": "^1.1.3",
     "caoh5-request": "^3.1.0",
+    "caoh5-util": "^1.1.3",
+    "echarts": "^3.8.5",
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.0",
     "react-dom": "^15.6.1",
@@ -56,5 +57,9 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
     "whatwg-fetch": "^2.0.2"
+  },
+  "theme": {
+    "primary-color": "#1DA57A"
   }
 }
+

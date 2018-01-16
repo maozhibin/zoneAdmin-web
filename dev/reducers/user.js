@@ -12,10 +12,27 @@ const user = buildReduce({
   photo: '',
   phone: ''
 });
-
+const userList = buildReduce({
+  USERLIST: (state, action) => {
+    return Object.assign({}, state, action.data);
+  }
+}, {
+  list: [],
+  total: 0,
+});
+const applayList = buildReduce({
+  APPLIYLIST: (state, action) => {
+    return Object.assign({}, state, action.data);
+  }
+}, {
+  list: [],
+  total: 0,
+});
 
 const userReducer = combineReducers({
   user,
+  userList,
+  applayList
 });
 
 export default userReducer;
