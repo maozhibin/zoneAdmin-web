@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {dispatch} from 'caoh5-util';
+import moment from 'moment';
 import {getData} from '../../actions/TwitterAction';
-import {Table,Message,Input,Form,Button,Col,Row,Select} from 'antd';
+import {Table,Message,Input,Form,Button,Col,Row,Select,DatePicker, TimePicker} from 'antd';
 const Search = Input.Search;
 const FormItem = Form.Item;
+const MonthPicker = DatePicker.MonthPicker;
+const RangePicker = DatePicker.RangePicker;
 class TwitterList extends Component {
     constructor(props) {
         super(props);
@@ -12,31 +15,28 @@ class TwitterList extends Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.changePage = this.changePage.bind(this);
-        this.changePage(1, 10);
+        this.changePage(1, 10,`default`);
         this.columns = [{
             title: 'ID',
             dataIndex: 'id',
         },{
             title: '标题',
             dataIndex: 'title',
-        }, {
-            title: '发帖人昵称',
-            dataIndex: 'nickName',
-        }, {
-            title: '帖子类型',
-            dataIndex: 'twitterTypeName',
-        }, {
-            title: '帖子板块',
-            dataIndex: 'topicClassName',
-        }, {
-            title: '展示内容',
-            dataIndex: 'showContent',
         },{
-            title: '帖子状态',
-            dataIndex: 'pushStatusValue',
-        }, {
+                title: '图片',
+                width:'10%',
+                render: (record) => <img src={record.icon} style={{ width: '30%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
+        },{
+            title: '创建者',
+            dataIndex: 'nickName',
+        },{
+            title: '内容',
+            dataIndex: 'content',
+            width:'40%',
+            render: (text) => <span className="col-sql" title={text}>{text}</span>,
+        },{
             title: '发帖时间',
-            dataIndex: 'createdTime',
+            render: (record) =><span className="ant-form-text">{moment(record.createdTime).format("YYYY-MM-DD HH:mm:ss")}</span> 
         },{
             title: '操作',
             dataIndex: '',
@@ -44,11 +44,7 @@ class TwitterList extends Component {
                 const {updateUserType} = this.props;
                 return (
                     <span>
-                       {
-                            record.idx != 1 ?
-                            <Button type="dashed" style={{marginLeft: 8}} onClick={() => updateUserType(record.id,3)}>置顶</Button> :
-                            <Button type="dashed" style={{marginLeft: 8}} >取消置顶</Button>
-                        }
+                         <Button type="danger" style={{marginLeft: 8}} >删除</Button>
                   </span>
                 );
             },
@@ -59,13 +55,14 @@ class TwitterList extends Component {
         return `共计 ${total} 条`;
     }
 
-    changePage(pageNo, pageSize) {
-        this.props.getData({pageNo: pageNo, pageSize: pageSize});
+    changePage(pageNo, pageSize,twitterType) {
+        this.props.getData({pageNo: pageNo, pageSize: pageSize,twitterType:twitterType});
     }
 
     handleSubmit(e) {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
+
             const {getData} = this.props;
             const data =JSON.stringify({
                 title:this.props.form.getFieldValue(`title`),
@@ -76,7 +73,14 @@ class TwitterList extends Component {
         });
 
     }
+
+    
+
     render() {
+        const rangeConfig = {
+            rules: [{ type: 'array', required: true, message: 'Please select time!' }],
+          };
+
         const {getFieldDecorator} = this.props.form;
         const {twitterList} = this.props;
         const {searchInfo} = this.props;
@@ -95,45 +99,29 @@ class TwitterList extends Component {
                    <Col span={2}>
                             <span>标题:</span>
                    </Col>
-                    <Col span={4} style={{ textAlign: 'right' }}>
+                    <Col span={3} style={{ textAlign: 'right' }}>
                         {getFieldDecorator(`title`, {
                             // rules: [{required: true, message: 'Please input the captcha you logicTable!'}],
                         })(
                             <Input/>
                         )}
                     </Col>
-                    <Col span={2}>
-                            <span>帖子类型:</span>
+                   <Col span={2}>
+                            <span>发帖人昵称:</span>
                    </Col>
-                    <Col span={4} style={{ textAlign: 'right' }}>
-                        {getFieldDecorator(`twitterType`, {
-                            initialValue :``,
+                    <Col span={3} style={{ textAlign: 'right' }}>
+                        {getFieldDecorator(`nickName`, {
                             // rules: [{required: true, message: 'Please input the captcha you logicTable!'}],
                         })(
-                            <Select>
-                                <Select.Option value={``}>全部</Select.Option>
-                                <Select.Option value={`default`}>普通贴</Select.Option>
-                                <Select.Option value={`joint-work`}>协作帖</Select.Option>
-                                <Select.Option value={`activity`}>获得贴</Select.Option>
-                                <Select.Option value={`vote`}>投票贴</Select.Option>
-                            </Select>
+                            <Input/>
                         )}
                     </Col>
                     <Col span={2}>
-                            <span>是否可用:</span>
+                            <span>创建时间:</span>
                    </Col>
-                    <Col span={4} style={{ textAlign: 'right' }}>
-                        {getFieldDecorator(`pushStatus`, {
-                            initialValue :``,
-                            // rules: [{required: true, message: 'Please input the captcha you logicTable!'}],
-                        })(
-                            <Select>
-                                <Select.Option value={``}>全部</Select.Option>
-                                <Select.Option value={`0`}>已发布</Select.Option>
-                                <Select.Option value={`1`}>已隐藏</Select.Option>
-                                <Select.Option value={`2`}>草稿</Select.Option>
-                                <Select.Option value={`3`}>删除</Select.Option>
-                            </Select>
+                    <Col span={6}>
+                        {getFieldDecorator(`createdTime`,rangeConfig)(
+                            <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                         )}
                     </Col>
                     <Col span={2} style={{ textAlign: 'right' }}>

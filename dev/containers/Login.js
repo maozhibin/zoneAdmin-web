@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { dispatch } from 'caoh5-util';
 // import { browserHistory } from 'react-router';
-import { login } from '../actions/user';
+import { login } from '../actions/admin';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 const FormItem = Form.Item;
 
@@ -25,10 +25,10 @@ class NormalLoginForm extends React.Component {
       <div id="login">
         <Form onSubmit={this.handleSubmit} className="login-form">
           <FormItem>
-            {getFieldDecorator('userName', {
+            {getFieldDecorator('name', {
               rules: [{ required: true, message: 'Please input your username!' }],
             })(
-              <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username" />
+              <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="name" />
             )}
           </FormItem>
           <FormItem>

@@ -82,7 +82,7 @@ class Public extends Component {
             </SubMenu>
 
             <SubMenu key="module2" onTitleClick={this.subMenuClick} title={<span><Icon type="copy" /><span>帖子配置</span></span>}>
-              <Menu.Item key="/public/module2/TwitterList">帖子列表列表</Menu.Item>
+              <Menu.Item key="/public/module2/TwitterList">文字帖列表</Menu.Item>
             </SubMenu>
           </Menu>
         </Sider>
@@ -101,7 +101,7 @@ class Public extends Component {
                   }}
                   title={<span>
                     <Icon type="user" />
-                    123
+                   { window.localStorage.getItem('token')}
                   </span>}
                 >
                   <Menu.Item key="logout" >

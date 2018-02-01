@@ -6,23 +6,24 @@ export function login(data) {
   return async (dispatch) => {
     try {
       // const json = await proRes({url: `${hostname.cap}/bps/h5Login/1.0`, type: 'jsonp', body: data});
-
-      // if (json.code == 0) {
-      //   const user = Object.assign({
-      //     phone: data.phone,
-      //     expiration: (new Date().getTime() + 30 * 24 * 3600 * 1000)
-      //   }, json.data);
-      //   dispatch({type: 'USER_UPDATE', data: user});
-      // } else {
-        
-      // }
-      const user = Object.assign({
-        phone: data.phone,
-        expiration: (new Date().getTime() + 30 * 24 * 3600 * 1000)
-      }, {});
-      dispatch({type: 'USER_UPDATE', data: user});
-      window.localStorage.setItem('token','123');      
-      browserHistory.push('public');
+      var json = await proRes(
+        {
+          url: `admin/login`,
+          type: 'post',
+          body: data
+        });
+      if (json.code == 200) {
+        const user = Object.assign({
+          name: data.name,
+          expiration: (new Date().getTime() + 30 * 24 * 3600 * 1000)
+        }, json.data);
+        dispatch({type: 'USER_UPDATE', data: user});
+        dispatch({type: 'USER_UPDATE', data: user});
+        window.localStorage.setItem('token',data.name);      
+        browserHistory.push('public');
+      } else {
+        alert("账号或者密码错误")
+      }
     } catch (e) {
       console.log(e);
     }

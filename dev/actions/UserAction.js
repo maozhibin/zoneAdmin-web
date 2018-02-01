@@ -3,36 +3,29 @@ import {browserHistory} from 'react-router';
 
 export function getData(data) {
     return (dispatch) => {
-        return getListInfo(dispatch, Object.assign({pageNo: 1, pageSize: 10}, data));
+        return getListInfo(dispatch, Object.assign({offset: 1, limit: 10}, data));
     }
 }
 //用户列表
 async function getListInfo(dispatch, data) {
     try {
-        var json = await proRes({url: `user/userList`, type: 'post', body: data});
+        var json = await proRes(
+            {
+                url: `user/userList?limit=`+data.limit+`&offset=`+data.offset,
+                type: 'post',
+                body: data});
         const list = [];
         if (json.code == 200) {
             const posts = json.object.page.rows;
             for (var i = 0; i < posts.length; i++) {
                     var userType = posts[i].userType;
                     var status = posts[i].status;
-                    if(status==0){
-                        posts[i].statusValue = `正常`;
-                    }else if(status==1){
-                        posts[i].statusValue = `已删除`;
-                    }else if(status==2){
-                        posts[i].statusValue = `冻结`;
-                    }else if(status==3){
-                        posts[i].statusValue = `禁言`;
-                    }
                     if(userType==1){
                         posts[i].userTypeValue = `游客`;
                     }else if(userType==2){
                         posts[i].userTypeValue = `验证客户`;
                     }else if(userType==3){
                         posts[i].userTypeValue = `付费会员`;
-                    }else if(userType==4){
-                        posts[i].userTypeValue = `预付费会员`;
                     }
                 list.push(posts[i]);
              }
@@ -55,35 +48,15 @@ export function ApplyLists(data) {
         return getApplyList(dispatch, Object.assign({pageNo: 1, pageSize: 10}, data));
     }
 }
-//用户列表
+//申请会员列表
 async function getApplyList(dispatch, data) {
     try {
-        var json = await proRes({url: `user/userList`, type: 'post', body: data});
+        var json = await proRes({url: `user/userList?limit=`+data.limit+`&offset=`+data.offset, type: 'post', body: data});
         const list = [];
         if (json.code == 200) {
-            const posts = json.object.page.rows;
+            const posts = json.object.page.rows; 
             for (var i = 0; i < posts.length; i++) {
-                    var userType = posts[i].userType;
-                    var status = posts[i].status;
-                    if(status==0){
-                        posts[i].statusValue = `正常`;
-                    }else if(status==1){
-                        posts[i].statusValue = `已删除`;
-                    }else if(status==2){
-                        posts[i].statusValue = `冻结`;
-                    }else if(status==3){
-                        posts[i].statusValue = `禁言`;
-                    }
-                    if(userType==1){
-                        posts[i].userTypeValue = `游客`;
-                    }else if(userType==2){
-                        posts[i].userTypeValue = `验证客户`;
-                    }else if(userType==3){
-                        posts[i].userTypeValue = `付费会员`;
-                    }else if(userType==4){
-                        posts[i].userTypeValue = `预付费会员`;
-                    }
-                if(posts[i].userType==4){
+                if(posts[i].status==2){
                     list.push(posts[i]);
                 }
              }
@@ -150,12 +123,12 @@ export function updateSattus(id,type) {
 export function updateUserType(id,type) {
     const data=JSON.stringify({
         id:id,
-        userType:type
+        status:type
     });
     var msg = "";
-    if(type==3){
+    if(type==1){
         msg = "你确定要拒绝用户申请";
-    }else if(type==4){
+    }else if(type==3){
         msg = "你确定要同意用户申请";
     }
     return async (dispatch) => {

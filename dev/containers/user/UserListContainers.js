@@ -21,20 +21,11 @@ class UserListContainers extends Component {
             title: '平台昵称',
             dataIndex: 'nickName',
         }, {
-            title: '邀请人昵称',
-            dataIndex: 'uidNickName',
-        }, {
             title: '用户手机号码',
             dataIndex: 'userMobile',
         }, {
-            title: '是否可用',
-            dataIndex: 'statusValue',
-        }, {
             title: '用户类型',
             dataIndex: 'userTypeValue',
-        }, {
-            title: '微信昵称',
-            dataIndex: 'wcUserName',
         },{
             title: '操作',
             dataIndex: '',
@@ -75,7 +66,7 @@ class UserListContainers extends Component {
     }
 
     changePage(pageNo, pageSize) {
-        this.props.getData({pageNo: pageNo, pageSize: pageSize});
+        this.props.getData({offset: pageNo, limit: pageSize});
     }
     handleSubmit(e) {
         e.preventDefault();
@@ -83,7 +74,7 @@ class UserListContainers extends Component {
             const {getData} = this.props;
             const data =JSON.stringify({
                 nickName:this.props.form.getFieldValue(`nickName`),
-                status:this.props.form.getFieldValue(`status`),
+                userMobile:this.props.form.getFieldValue(`userMobile`),
                 userType:this.props.form.getFieldValue(`userType`),
             })
             getData(JSON.parse(data));
@@ -117,22 +108,14 @@ class UserListContainers extends Component {
                             <Input/>
                         )}
                     </Col>
-
                     <Col span={2}>
-                            <span>是否可用:</span>
+                            <span>手机号:</span>
                    </Col>
                     <Col span={4} style={{ textAlign: 'right' }}>
-                        {getFieldDecorator(`status`, {
-                            initialValue :``,
+                        {getFieldDecorator(`userMobile`, {
                             // rules: [{required: true, message: 'Please input the captcha you logicTable!'}],
                         })(
-                            <Select>
-                                <Select.Option value={``}>全部</Select.Option>
-                                <Select.Option value={`0`}>正常</Select.Option>
-                                <Select.Option value={`1`}>已经删除</Select.Option>
-                                <Select.Option value={`2`}>冻结</Select.Option>
-                                <Select.Option value={`3`}>禁言</Select.Option>
-                            </Select>
+                            <Input/>
                         )}
                     </Col>
 
@@ -150,17 +133,12 @@ class UserListContainers extends Component {
                                 <Select.Option value={`1`}>游客</Select.Option>
                                 <Select.Option value={`2`}>验证客户</Select.Option>
                                 <Select.Option value={`3`}>付费会员</Select.Option>
-                                <Select.Option value={`4`}>预付费会员</Select.Option>
                             </Select>
                         )}
                     </Col>
-
                     <Col span={2} style={{ textAlign: 'right' }}>
                          <Button type="primary" htmlType="submit">搜索</Button>
                     </Col>
-                    {/* <Col span={2} style={{ textAlign: 'right' }}>
-                         <Button type="primary" onClick={() => addInfo()}>新建用户</Button>
-                    </Col> */}
                    </Row>
                 </FormItem>
             </Form>

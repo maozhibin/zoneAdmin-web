@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import moment from 'moment';
 import {connect} from 'react-redux';
 import {dispatch} from 'caoh5-util';
 import {ApplyLists,updateUserType} from '../../actions/UserAction';
@@ -14,32 +15,28 @@ class ApplyUserList extends Component {
         this.changePage = this.changePage.bind(this);
         this.changePage(1, 10);
         this.columns = [{
-            title: 'ID',
+            title: '用户id',
             dataIndex: 'id',
-        }, {
-            title: '图片',
-            // dataIndex: 'img',
-            // key: 'img',
-            width:'15%',
-            render: (record) => <img src={record.userAvatar} style={{ width: '50%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
-          },{
-            title: '平台昵称',
+        },  {
+            title: '用户昵称',
             dataIndex: 'nickName',
-        }, {
-            title: '邀请人昵称',
-            dataIndex: 'uidNickName',
-        }, {
+        },
+        //  {
+        //     title: '图片',
+        //     // dataIndex: 'img',
+        //     // key: 'img',
+        //     width:'15%',
+        //     render: (record) => <img src={record.userAvatar} style={{ width: '50%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
+        //   },{
+        //     title: '用户昵称',
+        //     dataIndex: 'nickName',
+        // },
+        {
             title: '用户手机号码',
             dataIndex: 'userMobile',
         }, {
-            title: '是否可用',
-            dataIndex: 'statusValue',
-        }, {
-            title: '用户类型',
-            dataIndex: 'userTypeValue',
-        }, {
-            title: '微信昵称',
-            dataIndex: 'wcUserName',
+            title: '申请时间',
+            render: (record) =><span className="ant-form-text">{moment(record.updateTime).format("YYYY-MM-DD HH:mm:ss")}</span> 
         },{
             title: '操作',
             dataIndex: '',
@@ -48,14 +45,14 @@ class ApplyUserList extends Component {
                 return (
                     <span>
                        {
-                            record.userType == 4 ?
+                            record.status == 2 ?
                             <Button type="dashed" style={{marginLeft: 8}} onClick={() => updateUserType(record.id,3)}>通过</Button> :
                             <Button type="dashed" style={{marginLeft: 8}} disabled>通过</Button>
                         }
 
                         {
-                            record.userType == 4 ?
-                            <Button type="dashed" style={{marginLeft: 8}} onClick={() => updateUserType(record.id,2)}>拒绝</Button> :
+                            record.status == 2 ?
+                            <Button type="dashed" style={{marginLeft: 8}} onClick={() => updateUserType(record.id,1)}>拒绝</Button> :
                             <Button type="dashed" style={{marginLeft: 8}} disabled>拒绝</Button>
                         }
                   </span>
@@ -77,7 +74,7 @@ class ApplyUserList extends Component {
             const {ApplyLists} = this.props;
             const data =JSON.stringify({
                 nickName:this.props.form.getFieldValue(`nickName`),
-                status:this.props.form.getFieldValue(`status`),
+                userMobile:this.props.form.getFieldValue(`userMobile`),
             })
             ApplyLists(JSON.parse(data));
         });
@@ -111,6 +108,18 @@ class ApplyUserList extends Component {
                     </Col>
 
                     <Col span={2}>
+                            <span>手机号:</span>
+                   </Col>
+                    <Col span={4} style={{ textAlign: 'right' }}>
+                        {getFieldDecorator(`userMobile`, {
+                            // rules: [{required: true, message: 'Please input the captcha you logicTable!'}],
+                        })(
+                            <Input/>
+                        )}
+                    </Col>
+
+
+                    {/* <Col span={2}>
                             <span>是否可用:</span>
                    </Col>
                     <Col span={4} style={{ textAlign: 'right' }}>
@@ -126,7 +135,7 @@ class ApplyUserList extends Component {
                                 <Select.Option value={`3`}>禁言</Select.Option>
                             </Select>
                         )}
-                    </Col>
+                    </Col> */}
                     <Col span={2} style={{ textAlign: 'right' }}>
                          <Button type="primary" htmlType="submit">搜索</Button>
                     </Col>
