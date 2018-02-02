@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {dispatch} from 'caoh5-util';
-import {ApplyLists,updateUserType} from '../../actions/UserAction';
+import {ApplyLists,updateUserType,VerifyPage} from '../../actions/UserAction';
 import {Table,Message,Input,Form,Button,Col,Row,Select} from 'antd';
 const Search = Input.Search;
 const FormItem = Form.Item;
+var baserUrl=`http://zone-admin.test.upcdn.net`
 class ApplyUserList extends Component {
     constructor(props) {
         super(props);
@@ -20,23 +21,22 @@ class ApplyUserList extends Component {
         },  {
             title: '用户昵称',
             dataIndex: 'nickName',
-        },
-        //  {
-        //     title: '图片',
-        //     // dataIndex: 'img',
-        //     // key: 'img',
-        //     width:'15%',
-        //     render: (record) => <img src={record.userAvatar} style={{ width: '50%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
-        //   },{
-        //     title: '用户昵称',
-        //     dataIndex: 'nickName',
-        // },
-        {
+        },{
             title: '用户手机号码',
             dataIndex: 'userMobile',
         }, {
             title: '申请时间',
             render: (record) =><span className="ant-form-text">{moment(record.updateTime).format("YYYY-MM-DD HH:mm:ss")}</span> 
+        },{
+            title: '真实姓名',
+            dataIndex: 'name',
+        },{
+            title: '身份证号码',
+            dataIndex: 'cid',
+        }, {
+            title: '身份证图',
+            width:'15%',
+            render: (record) => <img src={baserUrl+record.cidUrl} style={{ width: '50%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
         },{
             title: '操作',
             dataIndex: '',
@@ -46,14 +46,11 @@ class ApplyUserList extends Component {
                     <span>
                        {
                             record.status == 2 ?
-                            <Button type="dashed" style={{marginLeft: 8}} onClick={() => updateUserType(record.id,3)}>通过</Button> :
-                            <Button type="dashed" style={{marginLeft: 8}} disabled>通过</Button>
+                            <Button type="primary" style={{marginLeft: 8}} onClick={() => VerifyPage(record.id)}>审核</Button> :''
                         }
-
                         {
-                            record.status == 2 ?
-                            <Button type="dashed" style={{marginLeft: 8}} onClick={() => updateUserType(record.id,1)}>拒绝</Button> :
-                            <Button type="dashed" style={{marginLeft: 8}} disabled>拒绝</Button>
+                            record.status == 3 ?
+                            <Button type="danger" style={{marginLeft: 8}} onClick={() => VerifyPage(record.id)}>重审</Button> :''
                         }
                   </span>
                 );
@@ -66,7 +63,7 @@ class ApplyUserList extends Component {
     }
 
     changePage(pageNo, pageSize) {
-        this.props.ApplyLists({pageNo: pageNo, pageSize: pageSize});
+        this.props.ApplyLists({offset: pageNo, limit: pageSize});
     }
     handleSubmit(e) {
         e.preventDefault();
@@ -75,6 +72,7 @@ class ApplyUserList extends Component {
             const data =JSON.stringify({
                 nickName:this.props.form.getFieldValue(`nickName`),
                 userMobile:this.props.form.getFieldValue(`userMobile`),
+                status:this.props.form.getFieldValue(`status`),
             })
             ApplyLists(JSON.parse(data));
         });
@@ -119,8 +117,8 @@ class ApplyUserList extends Component {
                     </Col>
 
 
-                    {/* <Col span={2}>
-                            <span>是否可用:</span>
+                    <Col span={2}>
+                            <span>审核状态:</span>
                    </Col>
                     <Col span={4} style={{ textAlign: 'right' }}>
                         {getFieldDecorator(`status`, {
@@ -129,13 +127,11 @@ class ApplyUserList extends Component {
                         })(
                             <Select>
                                 <Select.Option value={``}>全部</Select.Option>
-                                <Select.Option value={`0`}>正常</Select.Option>
-                                <Select.Option value={`1`}>已经删除</Select.Option>
-                                <Select.Option value={`2`}>冻结</Select.Option>
-                                <Select.Option value={`3`}>禁言</Select.Option>
+                                <Select.Option value={`2`}>审核中</Select.Option>
+                                <Select.Option value={`3`}>审核通过</Select.Option>
                             </Select>
                         )}
-                    </Col> */}
+                    </Col>
                     <Col span={2} style={{ textAlign: 'right' }}>
                          <Button type="primary" htmlType="submit">搜索</Button>
                     </Col>

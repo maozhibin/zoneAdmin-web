@@ -45,7 +45,7 @@ async function getListInfo(dispatch, data) {
 
 export function ApplyLists(data) {
     return (dispatch) => {
-        return getApplyList(dispatch, Object.assign({pageNo: 1, pageSize: 10}, data));
+        return getApplyList(dispatch, Object.assign({offset: 1, limit: 10}, data));
     }
 }
 //申请会员列表
@@ -56,7 +56,7 @@ async function getApplyList(dispatch, data) {
         if (json.code == 200) {
             const posts = json.object.page.rows; 
             for (var i = 0; i < posts.length; i++) {
-                if(posts[i].status==2){
+                if(posts[i].status ==2 || posts[i].status ==3 ){
                     list.push(posts[i]);
                 }
              }
@@ -66,7 +66,7 @@ async function getApplyList(dispatch, data) {
         dispatch({
             type: 'APPLIYLIST', data: {
                 list: list,
-                total: json.object.page.total,
+                total: list.length,
             }
         });
     } catch (e) {
@@ -249,6 +249,31 @@ export function saveInfo(data) {
                 alert(json.msg)
             }
             // return true;
+        } catch (e) {
+            console.log(e);
+        }
+    }
+}
+
+//审核信息页面
+export function VerifyPage(id) {
+    return async (dispatch) => {
+        try {
+            const json = await proRes({
+                url: `/user/editOrUpdateUser` ,
+                type: 'post',
+                body: data
+            });
+            if (json.code ==200) {
+                browserHistory.push({
+                    pathname:'/public/module1/userList',
+                })
+            } else {
+                alert(json.msg)
+            }
+            // return true;
+
+            
         } catch (e) {
             console.log(e);
         }

@@ -8,6 +8,7 @@ import useRexhibition from './containers/user/useRexhibition';
 import UserEdit from './containers/user/UserEdit';
 import ApplyUserList from './containers/user/ApplyUserList';
 import TwitterList from './containers/twitter/TwitterList';
+import Verify from './containers/user/Verify'
 export default (
   <Route path="/" component={Index}>
     <IndexRoute component={Login}/>
@@ -17,6 +18,7 @@ export default (
         <Route path="useRexhibition" component={useRexhibition} />
         <Route path="UserEdit" component={UserEdit} />
         <Route path="ApplyUserList" component={ApplyUserList} />
+        <Route path="Verify" component={Verify} />
       </Route>
       <Route path="module2">
       <Route path="TwitterList" component={TwitterList} />
