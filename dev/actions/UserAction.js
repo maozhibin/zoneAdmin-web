@@ -258,24 +258,103 @@ export function saveInfo(data) {
 //审核信息页面
 export function VerifyPage(id) {
     return async (dispatch) => {
+        var Data = {
+            id:id
+        };
+        var path = {
+            pathname:'/public/module1/Verify',
+            state:Data,
+        }
+        browserHistory.push(path);
+    }
+}
+//审核人员信息
+export function VerifyInfo(id) {
+    return async (dispatch) => {
         try {
             const json = await proRes({
-                url: `/user/editOrUpdateUser` ,
+                url: `/user/verifyInfo?id=`+id ,
                 type: 'post',
-                body: data
+                body: ``
             });
-            if (json.code ==200) {
-                browserHistory.push({
-                    pathname:'/public/module1/userList',
-                })
+            var user=``;
+            if (json.code == 200) {
+                user = json.object.user; 
+                if(user.status==0){
+                    user.statusValue =`游客`
+                }else if(user.status==1){
+                    user.statusValue =`手机会员`
+                }else if(user.status==2){
+                    user.statusValue =`待审VIP`
+                }else if(user.status==3){
+                    user.statusValue =`付费VIP`
+                }
             } else {
-                alert(json.msg)
+                alert(json.message)
             }
-            // return true;
-
-            
+            dispatch({
+                type: 'VERIFY_INFO', data: {
+                    user: user,
+                }
+            });
         } catch (e) {
             console.log(e);
         }
     }
 }
+
+//标签不分页列表
+export function getLable() {
+    return async (dispatch) => {
+        try {
+            var json = await proRes(
+                {
+                    url: `lable/lableCount`,
+                    type: 'post',
+                    body: ``
+                });
+            const list = [];
+            if (json.code == 200) {
+                const posts = json.object.list;
+                for (var i = 0; i < posts.length; i++) {
+                    list.push(posts[i]);
+                 }
+            } else {
+                alert(json.message)
+            }
+            dispatch({
+                type: 'LABLECOUNT', data: {
+                    list: list,
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+}
+
+//修改审核状态
+export function updateVerifyInfo(data) {
+    console.log(data);
+    return async (dispatch) => {
+        try {
+            const json = await proRes({
+                url: `/user/updateVerifyInfo` ,
+                type: 'post',
+                body: data
+            });
+            if (json.code ==200) {
+                var path = {
+                    pathname:'/public/module1/ApplyUserList',
+                    state:``,
+                }
+                browserHistory.push(path);
+            } else {
+                alert(json.msg)
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+}
+

@@ -28,11 +28,28 @@ const applayList = buildReduce({
   list: [],
   total: 0,
 });
+const cyLableCount = buildReduce({
+  LABLECOUNT: (state, action) => {
+    return Object.assign({}, state, action.data);
+  }
+}, {
+  list: [],
+});
 
+
+const verifyInfo = buildReduce({
+  VERIFY_INFO: (state, action) => {
+    return Object.assign({}, state, action.data);
+  }
+}, {
+  user:``
+});
 const userReducer = combineReducers({
   user,
   userList,
-  applayList
+  applayList,
+  verifyInfo,
+  cyLableCount
 });
 
 export default userReducer;

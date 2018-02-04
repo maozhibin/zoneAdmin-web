@@ -3,38 +3,21 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import {Form, Input, Button, Message,Select,Upload,Icon,Modal,Col,Row,Radio,InputNumber} from 'antd';
-// import { Col } from '../../../node_modules/_antd@2.12.5@antd/lib/grid';
-// import { Row } from '../../../node_modules/_antd@2.12.5@antd/lib/grid';
-// import {saveInfo} from '../../actions/task/tast';
-// import {queryNoMysqlDataSource,saveInfo} from '../../actions/ShConfigAction';
+import {VerifyInfo,getLable,updateVerifyInfo} from '../../actions/UserAction';
+import user from '../../reducers/user';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+var baserUrl=`http://zone-admin.test.upcdn.net`
+var initValue=0;
 class Verify extends Component {
     constructor(props) {
+        initValue=0;
         super(props);
         this.state = {
-            previewVisible: false,
-            previewImage: '',
-            // username : window.localStorage.getItem("username"),
-            // id:this.props.location.state.id,
-            // regNamespace:this.props.location.state.regNamespace,
-            // regId:this.props.location.state.regId,
-            // regServerList:this.props.location.state.regServerList,
-            // dataSourceName:this.props.location.state.dataSourceName,
-            // createBy:this.props.location.state.createBy,
-            // updateBy:this.props.location.state.updateBy,
-            // update:this.props.location.state.update,
-            fileList: [{
-                uid: -1,
-                name: 'xxx.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-              }],
+            id:this.props.location.state.id,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handlePreview = this.handlePreview.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        this.updateVerifyInfo = this.updateVerifyInfo.bind(this);
         
     }
 
@@ -42,59 +25,63 @@ class Verify extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values);
-                // const {saveInfo} = this.props;
-                // saveInfo(values);
+                const {updateVerifyInfo} = this.props;
+                var data={
+                    id:this.props.form.getFieldValue(`id`),
+                    lableIdList:this.props.form.getFieldValue(`lableId`),
+                    status:`3`
+                }
+                updateVerifyInfo(data);
             }
         });
     }
    
-
-    //头像上传
-    handleCancel(){
-        this.setState(
-            { previewVisible: false }
-        )
+    updateVerifyInfo() {
+        var lableId =  this.props.form.getFieldValue(`lableId`);
+        const {updateVerifyInfo} = this.props;
+        var data={
+            id:this.props.form.getFieldValue(`id`),
+            lableIdList:this.props.form.getFieldValue(`lableId`),
+            status:`1`
+        }
+        updateVerifyInfo(data);
     }
-    
-      handlePreview (file) {
-        this.setState({
-          previewImage: file.url || file.thumbUrl,
-          previewVisible: true,
-        });
-      }
-    
-      handleChange({ fileList }){
-        this.setState({ fileList })
-      }
-
 
     componentWillMount() {
-       
-    }
+        const {VerifyInfo} = this.props;
+        VerifyInfo(this.state.id);
 
-    normFile(e) {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
+        const {getLable} = this.props;
+        getLable();
+        
     }
 
     render() {
+        initValue++;
+        const {verifyInfoValue} = this.props;
+        const userInfo = verifyInfoValue.user
+        var str = userInfo.lableId;
+        var labelidValue=[];
+        if(str !=undefined){
+            var strList=str.split(`,`);
+            for (let i = 0; i < strList.length; i++) {
+                labelidValue.push(strList[i].toString());
+            }
+        }
+
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-
-        const { previewVisible, previewImage, fileList } = this.state;
-        const uploadButton = (
-          <div>
-            <Icon type="plus" />
-            <div className="ant-upload-text">Upload</div>
-          </div>
-        );
-
+        //标签
+        const {getLableCount} = this.props;
+        var lableList = getLableCount.list;
+        var children = [];
+        for (let i = 0; i < lableList.length; i++) {
+            children.push(<Select.Option key={lableList[i].id.toString()}>{lableList[i].labelName}</Select.Option>);
+        }
+        
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
@@ -103,7 +90,7 @@ class Verify extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('id', {
-                        // initialValue : this.state.id
+                         initialValue:userInfo.id,
                     })(
                         <Input id="control-input" placeholder="Please enter..." disabled/>
                     )}
@@ -116,13 +103,8 @@ class Verify extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('nickName', {
-                        initialValue : this.state.nickName,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.nickName}</span>
                     )}
                 </FormItem>
 
@@ -132,12 +114,9 @@ class Verify extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('createdTime', {
-                        // initialValue : this.state.createdTime,
-                        rules: [{
-                            max: 32,
-                        }],
+                      
                     })(
-                        <span className="ant-form-text">{moment(this.state.createdTime).format("YYYY-MM-DD HH:mm:ss")}</span>
+                        <span className="ant-form-text">{moment(userInfo.createdTime).format("YYYY-MM-DD HH:mm:ss")}</span>
                     )}
                 </FormItem>
 
@@ -147,13 +126,8 @@ class Verify extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('inviteName', {
-                        // initialValue : this.state.inviteName,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.inviteNickName}</span>
                     )}
                 </FormItem>
 
@@ -163,13 +137,8 @@ class Verify extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('userSign', {
-                        initialValue : this.state.userSign,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.userSign}</span>
                     )}
                 </FormItem>
                 <FormItem
@@ -178,29 +147,19 @@ class Verify extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('wcUserName', {
-                        initialValue : this.state.wcUserName,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.wcUserName}</span>
                     )}
                 </FormItem>
 
                 <FormItem
-                    id="status"
+                    id="statusValue"
                     label="用户类型"
                     {...formItemLayout}
                     required>
-                    {getFieldDecorator('status', {
-                        initialValue : this.state.status,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
+                    {getFieldDecorator('statusValue', {
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.statusValue}</span>
                     )}
                 </FormItem>
 
@@ -210,110 +169,74 @@ class Verify extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('name', {
-                        initialValue : this.state.name,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.name}</span>
                     )}
                 </FormItem>
                 <FormItem
                     id="cid"
-                    label="身份证"
+                    label="身份证号"
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('cid', {
-                        initialValue : this.state.cid,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.cid}</span>
                     )}
                 </FormItem>
                 <FormItem
-                    id="cid"
-                    label="身份证"
+                    id="cidUrl"
+                    label="身份证照片"
                     {...formItemLayout}
                     required>
-                    {getFieldDecorator('cid', {
-                        initialValue : this.state.cid,
-                        rules: [{
-                            // required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
+                    {getFieldDecorator('cidUrl', {
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <img src={baserUrl+userInfo.cidUrl} style={{ width: '50%' }}/>
                     )}
                 </FormItem>
-                {/* <FormItem
+                
+                <FormItem
+                    id="lableId"
+                    label="标签(多选)"
                     {...formItemLayout}
-                    label="平台头像"
-                    // extra="longgggggggggggggggggggggggggggggggggg"
+                    required>
+                    {getFieldDecorator('lableId', {
+                        initialValue:labelidValue,
+                    })(
+                    <Select
+                        mode="multiple"
+                        style={{ width: '100%' }}
+                        placeholder="Please select"
+                        // defaultValue={['a10', 'c12']}
                     >
-                    {getFieldDecorator('upload', {
-                        valuePropName: 'fileList',
-                        getValueFromEvent: this.normFile,
-                    })(
-                        // <div>
-                        <Col>
-                            <Upload
-                                action="//jsonplaceholder.typicode.com/posts/"
-                                listType="picture-card"
-                                fileList={fileList}
-                                onPreview={this.handlePreview}
-                                onChange={this.handleChange}
-                                >
-                            {fileList.length >= 1 ? null : uploadButton}
-                            </Upload>
-                            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                            <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                            </Modal>
-                        </Col>
-                        // </div>
-                        // <Upload
-                        // action="//jsonplaceholder.typicode.com/posts/"
-                        // listType="picture-card"
-                        // fileList={fileList}
-                        // onPreview={this.handlePreview}
-                        // onChange={this.handleChange}
-                        // >
-                        // {fileList.length >= 3 ? null : uploadButton}
-                        // </Upload>
-                        // <Row gutter={10}>
-                        //      <Col span={6}>
-                        //      <span>username:</span>
-                        //     </Col>
-                        //     <Col span={6}>
-                        //         <span>username:</span>
-                        //     </Col>
-                        // </Row>
+                      {children}
+                    </Select>
                     )}
-                    </FormItem> */}
-
+                </FormItem>
 
                 <FormItem wrapperCol={{
                     xs: {span: 24, offset: 0},
                     sm: {span: 16, offset: 8},
                 }} style={{marginTop: 24}}>
-                    <Button type="primary" htmlType="submit">确定</Button>
-                    &nbsp;&nbsp;&nbsp;
                     <Button type="ghost" onClick={() => browserHistory.goBack()}>返回</Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button type="primary" htmlType="submit">保存并通过</Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button type="danger" onClick={this.updateVerifyInfo}>拒绝</Button>
                 </FormItem>
             </Form>
         );
     }
 }
 
-const VerifyInfo = Form.create()(Verify);
+const VerifyInfoPage = Form.create()(Verify);
+
 export default connect((state) => {
     return {
-        // noMysqlDataSourceList: state.shConfigReducer.noMysqlDataSourceList
+        verifyInfoValue: state.userReducer.verifyInfo,
+        getLableCount : state.userReducer.cyLableCount,
     };
 }, {
-    // queryNoMysqlDataSource,
-    // saveInfo
-})(VerifyInfo);
+    VerifyInfo,
+    getLable,
+    updateVerifyInfo
+})(VerifyInfoPage);

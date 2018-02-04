@@ -41,7 +41,7 @@ class ApplyUserList extends Component {
             title: '操作',
             dataIndex: '',
             render: (record) => {
-                const {updateUserType} = this.props;
+                const {VerifyPage} = this.props;
                 return (
                     <span>
                        {
@@ -158,5 +158,5 @@ export default connect((state) => {
 }, {
     dispatch,
     ApplyLists,
-    updateUserType
+    VerifyPage
 })(ApplyUserListInfo);

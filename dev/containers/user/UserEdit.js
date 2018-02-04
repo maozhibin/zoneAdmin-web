@@ -41,7 +41,6 @@ class UserEdit extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values);
                 // const {saveInfo} = this.props;
                 // saveInfo(values);
             }
