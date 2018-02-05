@@ -34,7 +34,6 @@ async function getListInfo(dispatch, data) {
                 }
                 list.push(posts[i]);
              }
-             console.log(list);
         } else {
             alert(json.message)
         }

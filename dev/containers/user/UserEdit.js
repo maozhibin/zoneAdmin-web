@@ -1,39 +1,23 @@
 import React, {Component} from 'react';
+import moment from 'moment';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import {Form, Input, Button, Message,Select,Upload,Icon,Modal,Col,Row,Radio,InputNumber} from 'antd';
-// import { Col } from '../../../node_modules/_antd@2.12.5@antd/lib/grid';
-// import { Row } from '../../../node_modules/_antd@2.12.5@antd/lib/grid';
-// import {saveInfo} from '../../actions/task/tast';
-// import {queryNoMysqlDataSource,saveInfo} from '../../actions/ShConfigAction';
+import {VerifyInfo,getLable,updateVerifyInfo} from '../../actions/UserAction';
+import user from '../../reducers/user';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+var baserUrl=`http://zone-admin.test.upcdn.net`
+var initValue=0;
 class UserEdit extends Component {
     constructor(props) {
+        initValue=0;
         super(props);
         this.state = {
-            previewVisible: false,
-            previewImage: '',
-            // username : window.localStorage.getItem("username"),
-            // id:this.props.location.state.id,
-            // regNamespace:this.props.location.state.regNamespace,
-            // regId:this.props.location.state.regId,
-            // regServerList:this.props.location.state.regServerList,
-            // dataSourceName:this.props.location.state.dataSourceName,
-            // createBy:this.props.location.state.createBy,
-            // updateBy:this.props.location.state.updateBy,
-            // update:this.props.location.state.update,
-            fileList: [{
-                uid: -1,
-                name: 'xxx.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-              }],
+            id:this.props.location.state.id,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handlePreview = this.handlePreview.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        this.updateVerifyInfo = this.updateVerifyInfo.bind(this);
         
     }
 
@@ -41,58 +25,63 @@ class UserEdit extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // const {saveInfo} = this.props;
-                // saveInfo(values);
+                const {updateVerifyInfo} = this.props;
+                var data={
+                    id:this.props.form.getFieldValue(`id`),
+                    lableIdList:this.props.form.getFieldValue(`lableId`),
+                    status:`3`
+                }
+                updateVerifyInfo(data);
             }
         });
     }
    
-
-    //头像上传
-    handleCancel(){
-        this.setState(
-            { previewVisible: false }
-        )
+    updateVerifyInfo() {
+        var lableId =  this.props.form.getFieldValue(`lableId`);
+        const {updateVerifyInfo} = this.props;
+        var data={
+            id:this.props.form.getFieldValue(`id`),
+            lableIdList:this.props.form.getFieldValue(`lableId`),
+            status:`1`
+        }
+        updateVerifyInfo(data);
     }
-    
-      handlePreview (file) {
-        this.setState({
-          previewImage: file.url || file.thumbUrl,
-          previewVisible: true,
-        });
-      }
-    
-      handleChange({ fileList }){
-        this.setState({ fileList })
-      }
-
 
     componentWillMount() {
-       
-    }
+        const {VerifyInfo} = this.props;
+        VerifyInfo(this.state.id);
 
-    normFile(e) {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
+        const {getLable} = this.props;
+        getLable();
+        
     }
 
     render() {
+        initValue++;
+        const {verifyInfoValue} = this.props;
+        const userInfo = verifyInfoValue.user
+        var str = userInfo.lableId;
+        var labelidValue=[];
+        if(str !=undefined){
+            var strList=str.split(`,`);
+            for (let i = 0; i < strList.length; i++) {
+                labelidValue.push(strList[i].toString());
+            }
+        }
+
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-
-        const { previewVisible, previewImage, fileList } = this.state;
-        const uploadButton = (
-          <div>
-            <Icon type="plus" />
-            <div className="ant-upload-text">Upload</div>
-          </div>
-        );
-
+        //标签
+        const {getLableCount} = this.props;
+        var lableList = getLableCount.list;
+        var children = [];
+        for (let i = 0; i < lableList.length; i++) {
+            children.push(<Select.Option key={lableList[i].id.toString()}>{lableList[i].labelName}</Select.Option>);
+        }
+        
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
@@ -101,27 +90,12 @@ class UserEdit extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('id', {
-                        // initialValue : this.state.id
+                         initialValue:userInfo.id,
                     })(
                         <Input id="control-input" placeholder="Please enter..." disabled/>
                     )}
                 </FormItem>
 
-                <FormItem
-                    id="name"
-                    label="用户名"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('name', {
-                        // initialValue : this.state.regNamespace,
-                        rules: [{
-                            required: true, message: 'Please input your name!',
-                            max: 32,
-                        }],
-                    })(
-                        <Input id="control-input" placeholder="Please enter..." />
-                    )}
-                </FormItem>
                 
                 <FormItem
                     id="nickName"
@@ -129,239 +103,113 @@ class UserEdit extends Component {
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('nickName', {
-                        initialValue : this.state.regNamespace,
-                        rules: [{
-                            required: true, message: 'Please input your nickName!',
-                            max: 32,
-                        }],
                     })(
-                        <Input id="control-input" placeholder="Please enter..." />
+                        <span>{userInfo.nickName}</span>
                     )}
                 </FormItem>
 
-                {/* <FormItem
+                <FormItem
+                    id="createdTime"
+                    label="注册时间"
                     {...formItemLayout}
-                    label="平台头像"
-                    // extra="longgggggggggggggggggggggggggggggggggg"
-                    >
-                    {getFieldDecorator('upload', {
-                        valuePropName: 'fileList',
-                        getValueFromEvent: this.normFile,
+                    required>
+                    {getFieldDecorator('createdTime', {
+                      
                     })(
-                        // <div>
-                        <Col>
-                            <Upload
-                                action="//jsonplaceholder.typicode.com/posts/"
-                                listType="picture-card"
-                                fileList={fileList}
-                                onPreview={this.handlePreview}
-                                onChange={this.handleChange}
-                                >
-                            {fileList.length >= 1 ? null : uploadButton}
-                            </Upload>
-                            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                            <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                            </Modal>
-                        </Col>
-                        // </div>
-                        // <Upload
-                        // action="//jsonplaceholder.typicode.com/posts/"
-                        // listType="picture-card"
-                        // fileList={fileList}
-                        // onPreview={this.handlePreview}
-                        // onChange={this.handleChange}
-                        // >
-                        // {fileList.length >= 3 ? null : uploadButton}
-                        // </Upload>
-                        // <Row gutter={10}>
-                        //      <Col span={6}>
-                        //      <span>username:</span>
-                        //     </Col>
-                        //     <Col span={6}>
-                        //         <span>username:</span>
-                        //     </Col>
-                        // </Row>
+                        <span className="ant-form-text">{moment(userInfo.createdTime).format("YYYY-MM-DD HH:mm:ss")}</span>
                     )}
-                    </FormItem> */}
+                </FormItem>
+
+                <FormItem
+                    id="inviteName"
+                    label="邀请人昵称"
+                    {...formItemLayout}
+                    required>
+                    {getFieldDecorator('inviteName', {
+                    })(
+                        <span>{userInfo.inviteNickName}</span>
+                    )}
+                </FormItem>
 
                 <FormItem
                     id="userSign"
-                    label="平台签名"
+                    label="自我描述"
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('userSign', {
-                        // initialValue : this.state.regId,
-                        required: true, message: '请输入正确平台签名!',
-                        max: 32,
                     })(
-                        <Input id="control-input" placeholder="Please enter..."  />
+                        <span>{userInfo.userSign}</span>
                     )}
                 </FormItem>
-                <FormItem
-                    id="userMobile"
-                    label="用户手机号码"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('userMobile', {
-                        // initialValue : this.state.regServerList,
-                        required: true, message: '请输入正确用户手机号码!',
-                        max: 32,
-                    })(
-                        <Input id="control-input" placeholder="Please enter..."  />
-                    )}
-                </FormItem>
-               
-                <FormItem
-                    id="userType"
-                    label="用户类型"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('userType', {
-                        initialValue : `1`,
-                        // required: true, message: '请输入正确创建人!',
-                        // max: 32,
-                    })(
-                        <RadioGroup>
-                            <Radio value={`1`}>游客</Radio>
-                            <Radio value={`2`}>验证客户</Radio>
-                            <Radio value={`3`}>付费会员</Radio>
-                         </RadioGroup>
-
-                        // <Select>
-                        //     <Select.Option value={`1`}>游客</Select.Option>
-                        //     <Select.Option value={`2`}>验证客户</Select.Option>
-                        //     <Select.Option value={`3`}>付费会员</Select.Option>
-                        // </Select>
-                    )}
-                </FormItem>
-
                 <FormItem
                     id="wcUserName"
                     label="微信账号"
                     {...formItemLayout}
                     required>
                     {getFieldDecorator('wcUserName', {
-                        // initialValue :this.state.username,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
-                    )}
-                </FormItem>
-                <FormItem
-                    id="wcNickName"
-                    label="微信名"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('wcNickName', {
-                        // initialValue :this.state.username,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
-                    })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
+                        <span>{userInfo.wcUserName}</span>
                     )}
                 </FormItem>
 
                 <FormItem
-                    id="status"
-                    label="用户状态"
+                    id="statusValue"
+                    label="用户类型"
                     {...formItemLayout}
                     required>
-                    {getFieldDecorator('status', {
-                        initialValue :`0`,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
+                    {getFieldDecorator('statusValue', {
                     })(
-                        <RadioGroup>
-                            <Radio value={`0`}>正常</Radio>
-                            <Radio value={`1`}>删除</Radio>
-                            <Radio value={`2`}>冻结</Radio>
-                            <Radio value={`3`}>禁言</Radio>
-                        </RadioGroup>
+                        <span>{userInfo.statusValue}</span>
+                    )}
+                </FormItem>
+
+                <FormItem
+                    id="name"
+                    label="真实姓名"
+                    {...formItemLayout}
+                    required>
+                    {getFieldDecorator('name', {
+                    })(
+                        <span>{userInfo.name}</span>
+                    )}
+                </FormItem>
+                <FormItem
+                    id="cid"
+                    label="身份证号"
+                    {...formItemLayout}
+                    required>
+                    {getFieldDecorator('cid', {
+                    })(
+                        <span>{userInfo.cid}</span>
+                    )}
+                </FormItem>
+                <FormItem
+                    id="cidUrl"
+                    label="身份证照片"
+                    {...formItemLayout}
+                    required>
+                    {getFieldDecorator('cidUrl', {
+                    })(
+                        <img src={baserUrl+userInfo.cidUrl} style={{ width: '50%' }}/>
                     )}
                 </FormItem>
                 
                 <FormItem
-                    id="aliUserName"
-                    label="支付宝账号"
+                    id="lableId"
+                    label="标签(多选)"
                     {...formItemLayout}
                     required>
-                    {getFieldDecorator('aliUserName', {
-                        // initialValue :this.state.username,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
+                    {getFieldDecorator('lableId', {
+                        initialValue:labelidValue,
                     })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
-                    )}
-                </FormItem>
-                
-                <FormItem
-                    id="aliNickName"
-                    label="支付宝昵称"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('aliNickName', {
-                        // initialValue :this.state.username,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
-                    })(
-                        <Input id="control-input" placeholder="Please enter..." disabled/>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    id="vipLevel"
-                    label="vip等级"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('vipLevel', {
-                        // initialValue :this.state.username,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
-                    })(
-                        <InputNumber/>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    id="cyScoreCount"
-                    label="累计积分"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('cyScoreCount', {
-                        initialValue :0,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
-                    })(
-                        <InputNumber/>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    id="cyScoreBalance"
-                    label="累计积分"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('cyScoreBalance', {
-                        initialValue :0,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
-                    })(
-                        <InputNumber/>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    id="balance"
-                    label="余额"
-                    {...formItemLayout}
-                    required>
-                    {getFieldDecorator('balance', {
-                        initialValue :0,
-                        // required: true, message: '请输入正确修改人!',
-                        // max: 32,
-                    })(
-                        <InputNumber/>
+                    <Select
+                        mode="multiple"
+                        style={{ width: '100%' }}
+                        placeholder="Please select"
+                        // defaultValue={['a10', 'c12']}
+                    >
+                      {children}
+                    </Select>
                     )}
                 </FormItem>
 
@@ -369,21 +217,26 @@ class UserEdit extends Component {
                     xs: {span: 24, offset: 0},
                     sm: {span: 16, offset: 8},
                 }} style={{marginTop: 24}}>
-                    <Button type="primary" htmlType="submit">确定</Button>
-                    &nbsp;&nbsp;&nbsp;
                     <Button type="ghost" onClick={() => browserHistory.goBack()}>返回</Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button type="primary" htmlType="submit">保存并通过</Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button type="danger" onClick={this.updateVerifyInfo}>拒绝</Button>
                 </FormItem>
             </Form>
         );
     }
 }
 
-const UserEditInfo = Form.create()(UserEdit);
+const UserEditPage = Form.create()(UserEdit);
+
 export default connect((state) => {
     return {
-        // noMysqlDataSourceList: state.shConfigReducer.noMysqlDataSourceList
+        verifyInfoValue: state.userReducer.verifyInfo,
+        getLableCount : state.userReducer.cyLableCount,
     };
 }, {
-    // queryNoMysqlDataSource,
-    // saveInfo
-})(UserEditInfo);
+    VerifyInfo,
+    getLable,
+    updateVerifyInfo
+})(UserEditPage);

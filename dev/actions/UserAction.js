@@ -13,19 +13,21 @@ async function getListInfo(dispatch, data) {
             {
                 url: `user/userList?limit=`+data.limit+`&offset=`+data.offset,
                 type: 'post',
-                body: data});
+                body: data
+            });
         const list = [];
         if (json.code == 200) {
             const posts = json.object.page.rows;
             for (var i = 0; i < posts.length; i++) {
-                    var userType = posts[i].userType;
                     var status = posts[i].status;
-                    if(userType==1){
+                    if(status==0){
                         posts[i].userTypeValue = `游客`;
-                    }else if(userType==2){
-                        posts[i].userTypeValue = `验证客户`;
-                    }else if(userType==3){
-                        posts[i].userTypeValue = `付费会员`;
+                    }else if(status==1){
+                        posts[i].userTypeValue = `手机会员`;
+                    }else if(status==2){
+                        posts[i].userTypeValue = `待审核Vip`;
+                    }else if(status==3){
+                        posts[i].userTypeValue = `付费Vip`;
                     }
                 list.push(posts[i]);
              }

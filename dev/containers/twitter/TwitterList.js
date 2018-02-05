@@ -62,14 +62,23 @@ class TwitterList extends Component {
     handleSubmit(e) {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-
             const {getData} = this.props;
-            const data =JSON.stringify({
-                title:this.props.form.getFieldValue(`title`),
-                twitterType:this.props.form.getFieldValue(`twitterType`),
-                pushStatus:this.props.form.getFieldValue(`pushStatus`),
-            })
-            getData(JSON.parse(data));
+            if(this.props.form.getFieldValue(`createdTime`)!=undefined){
+                const data =JSON.stringify({
+                    title:this.props.form.getFieldValue(`title`),
+                    nickName:this.props.form.getFieldValue(`nickName`),
+                    endTime: moment(this.props.form.getFieldValue(`createdTime`)[1]._d).format("YYYY-MM-DD HH:mm:ss"),
+                    statrTime: moment(this.props.form.getFieldValue(`createdTime`)[0]._d).format("YYYY-MM-DD HH:mm:ss"),
+                })
+                getData(JSON.parse(data));
+            }else{
+                const data =JSON.stringify({
+                    title:this.props.form.getFieldValue(`title`),
+                    nickName:this.props.form.getFieldValue(`nickName`),
+                })
+                getData(JSON.parse(data));
+            }
+            
         });
 
     }
@@ -101,7 +110,6 @@ class TwitterList extends Component {
                    </Col>
                     <Col span={3} style={{ textAlign: 'right' }}>
                         {getFieldDecorator(`title`, {
-                            // rules: [{required: true, message: 'Please input the captcha you logicTable!'}],
                         })(
                             <Input/>
                         )}
@@ -111,7 +119,6 @@ class TwitterList extends Component {
                    </Col>
                     <Col span={3} style={{ textAlign: 'right' }}>
                         {getFieldDecorator(`nickName`, {
-                            // rules: [{required: true, message: 'Please input the captcha you logicTable!'}],
                         })(
                             <Input/>
                         )}
