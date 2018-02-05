@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import {dispatch} from 'caoh5-util';
-import {getData,updateSattus,editInfo,addInfo,getLable} from '../../actions/UserAction';
+import {getData,updateSattus,editInfo,addInfo,getLable,addBlack,cyLableList} from '../../actions/UserAction';
 import {Table,Form, Input, Button, Message,Select,Upload,Icon,Modal,Col,Row,Radio,InputNumber,DatePicker, TimePicker} from 'antd';
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -41,9 +41,12 @@ class UserListContainers extends Component {
             render: (record) => {
                 const {updateSattus} = this.props;
                 const {editInfo} = this.props;
+                const {addBlack} = this.props;
                 return (
                     <span>
                        <Button type="dashed" onClick={() => editInfo(record)}>编辑</Button>
+                       &nbsp;&nbsp;&nbsp;
+                       <Button type="dashed" onClick={() => addBlack(record.id)}>加入黑名单</Button>
                        {/* {
                             record.status != 1 ?
                             <Button type="danger" style={{marginLeft: 8}} onClick={() => updateSattus(record.id,1)}>删除</Button> :
@@ -128,6 +131,8 @@ class UserListContainers extends Component {
         const {userList} = this.props;
         const {searchInfo} = this.props;
         const {addInfo} = this.props;
+        const {cyLableList} = this.props;
+
         const formItemLayout = {
             labelCol: { span: 5 },
             wrapperCol: { span: 20 },
@@ -139,7 +144,7 @@ class UserListContainers extends Component {
                     id="id"
                     {...formItemLayout}
                     required>
-                   <Row gutter={20}>
+                   <Row gutter={25}>
                    <Col span={1}>
                             <span>平台昵称:</span>
                    </Col>
@@ -195,7 +200,7 @@ class UserListContainers extends Component {
                     <Col span={1}>
                             <span>标签:</span>
                    </Col>
-                    <Col span={4}>
+                    <Col span={3}>
                         {getFieldDecorator(`lableId`)(
                            <Select
                            mode="multiple"
@@ -207,14 +212,23 @@ class UserListContainers extends Component {
                        </Select>
                         )}
                     </Col>
-
-                    <Col span={2} style={{ textAlign: 'right' }}>
+                    <Col span={1} style={{ textAlign: 'right' }}>
                          <Button type="primary" htmlType="submit">搜索</Button>
                     </Col>
+                   
                    </Row>
                 </FormItem>
             </Form>
-            
+            <Row gutter={5}>
+                    <Col span={2} style={{ textAlign: 'right' }}>
+                         <Button type="primary" htmlType="submit">黑名单管理</Button>
+                    </Col>
+
+                    <Col span={2} style={{ textAlign: 'right' }}>
+                          <Button type="primary" onClick={() => cyLableList()}>标签管理</Button>
+                    </Col>
+            </Row>
+            <br/>
             <Table columns={this.columns} dataSource={userList.list} pagination={
                 {
                     total: userList.total,
@@ -223,6 +237,8 @@ class UserListContainers extends Component {
                 }
             }/>
             </div>
+
+            
         );
     }
 }
@@ -238,5 +254,7 @@ export default connect((state) => {
     updateSattus,
     editInfo,
     addInfo,
-    getLable
+    getLable,
+    addBlack,
+    cyLableList
 })(UserListContainersInfo);

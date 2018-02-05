@@ -3,7 +3,7 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import {Form, Input, Button, Message,Select,Upload,Icon,Modal,Col,Row,Radio,InputNumber} from 'antd';
-import {VerifyInfo,getLable,updateVerifyInfo} from '../../actions/UserAction';
+import {VerifyInfo,getLable,saveInfo} from '../../actions/UserAction';
 import user from '../../reducers/user';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -17,7 +17,6 @@ class UserEdit extends Component {
             id:this.props.location.state.id,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.updateVerifyInfo = this.updateVerifyInfo.bind(this);
         
     }
 
@@ -25,28 +24,17 @@ class UserEdit extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const {updateVerifyInfo} = this.props;
+                const {saveInfo} = this.props;
                 var data={
                     id:this.props.form.getFieldValue(`id`),
                     lableIdList:this.props.form.getFieldValue(`lableId`),
-                    status:`3`
                 }
-                updateVerifyInfo(data);
+                saveInfo(data);
             }
         });
     }
    
-    updateVerifyInfo() {
-        var lableId =  this.props.form.getFieldValue(`lableId`);
-        const {updateVerifyInfo} = this.props;
-        var data={
-            id:this.props.form.getFieldValue(`id`),
-            lableIdList:this.props.form.getFieldValue(`lableId`),
-            status:`1`
-        }
-        updateVerifyInfo(data);
-    }
-
+    
     componentWillMount() {
         const {VerifyInfo} = this.props;
         VerifyInfo(this.state.id);
@@ -204,7 +192,7 @@ class UserEdit extends Component {
                     })(
                     <Select
                         mode="multiple"
-                        style={{ width: '100%' }}
+                        style={{ width: '50%' }}
                         placeholder="Please select"
                         // defaultValue={['a10', 'c12']}
                     >
@@ -219,9 +207,7 @@ class UserEdit extends Component {
                 }} style={{marginTop: 24}}>
                     <Button type="ghost" onClick={() => browserHistory.goBack()}>返回</Button>
                     &nbsp;&nbsp;&nbsp;
-                    <Button type="primary" htmlType="submit">保存并通过</Button>
-                    &nbsp;&nbsp;&nbsp;
-                    <Button type="danger" onClick={this.updateVerifyInfo}>拒绝</Button>
+                    <Button type="primary" htmlType="submit">保存</Button>
                 </FormItem>
             </Form>
         );
@@ -238,5 +224,5 @@ export default connect((state) => {
 }, {
     VerifyInfo,
     getLable,
-    updateVerifyInfo
+    saveInfo
 })(UserEditPage);

@@ -155,9 +155,6 @@ export function updateUserType(id,type) {
     }
 }
 
-
-
-
 export function editInfo(data) {
     return async (dispatch) => {
         var Data = {
@@ -196,44 +193,6 @@ export function editInfo(data) {
     }
 }
 
-export function addInfo(data) {
-    return async (dispatch) => {
-        var Data = {
-            id:``,
-            uid:``,
-            nickName:``,
-            userAvatar :``,
-            userSign:``,
-            userMobile :``,
-            userType :``,
-            wcUserName :``,
-            wcNickName :``,
-            inviteUid :``,
-            wcQrCode :``,
-            lastLoginTime :``,
-            createdTime :``,
-            updateTime :``,
-            status:``,
-            aliUserName :``,
-            aliNickName :``,
-            aliUserid :``,
-            vipLevel :``,
-            cyScoreCount :``,
-            cyScoreBalance :``,
-            balance : ``,
-            name :``,
-            cid :``,
-            isRealName :``,
-            isRealName :``
-        };
-        var path = {
-            pathname:'/public/module1/UserEdit',
-            state:Data,
-        }
-        browserHistory.push(path);
-    }
-}
-
 //保存数据
 export function saveInfo(data) {
     return async (dispatch) => {
@@ -255,6 +214,36 @@ export function saveInfo(data) {
             console.log(e);
         }
     }
+}
+
+//添加黑名单
+export function addBlack(data) {
+    var dataValue = {
+        id:data,
+        black:1
+    }
+    return async (dispatch) => {
+        var msg = "你确定要将该用户加入黑名单";
+        if (confirm(msg) == true) {
+            try {
+                    const json = await proRes({
+                        url: `/user/editOrUpdateUser` ,
+                        type: 'post',
+                        body: dataValue
+                    });
+
+                    if (json.code ==200) {
+                       return getListInfo(dispatch, Object.assign({offset: 0, limit: 10}));
+                    } else {
+                        alert(json.msg)
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }else{
+                return;
+            }
+        }
 }
 
 //审核信息页面
@@ -359,4 +348,14 @@ export function updateVerifyInfo(data) {
         }
     }
 }
-
+//标签列表
+export function cyLableList(data) {
+    return async (dispatch) => {
+        var Data = {};
+        var path = {
+            pathname:'/public/module1/CyLable',
+            state:Data,
+        }
+        browserHistory.push(path);
+    }
+}

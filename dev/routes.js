@@ -9,6 +9,7 @@ import UserEdit from './containers/user/UserEdit';
 import ApplyUserList from './containers/user/ApplyUserList';
 import TwitterList from './containers/twitter/TwitterList';
 import Verify from './containers/user/Verify'
+import CyLable from './containers/lable/CyLable'
 export default (
   <Route path="/" component={Index}>
     <IndexRoute component={Login}/>
@@ -19,6 +20,7 @@ export default (
         <Route path="UserEdit" component={UserEdit} />
         <Route path="ApplyUserList" component={ApplyUserList} />
         <Route path="Verify" component={Verify} />
+        <Route path="CyLable" component={CyLable} />
       </Route>
       <Route path="module2">
       <Route path="TwitterList" component={TwitterList} />
