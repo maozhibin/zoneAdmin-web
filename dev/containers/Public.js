@@ -76,7 +76,7 @@ class Public extends Component {
             selectedKeys={[this.state.current]}
           >
             <SubMenu key="module1" onTitleClick={this.subMenuClick} title={<span><Icon type="user" /><span>用户配置</span></span>}>
-            <Menu.Item key="/public/module1/useRexhibition">用户图形信息</Menu.Item>
+            {/* <Menu.Item key="/public/module1/useRexhibition">用户图形信息</Menu.Item> */}
               <Menu.Item key="/public/module1/userList">用户列表</Menu.Item>
               <Menu.Item key="/public/module1/ApplyUserList">申请升级会员列表</Menu.Item>
             </SubMenu>

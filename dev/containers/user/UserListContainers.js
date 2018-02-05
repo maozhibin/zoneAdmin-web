@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import {dispatch} from 'caoh5-util';
-import {getData,updateSattus,editInfo,addInfo,getLable,addBlack,cyLableList} from '../../actions/UserAction';
+import {getData,updateSattus,editInfo,addInfo,getLable,addBlack,cyLableList,blackList} from '../../actions/UserAction';
 import {Table,Form, Input, Button, Message,Select,Upload,Icon,Modal,Col,Row,Radio,InputNumber,DatePicker, TimePicker} from 'antd';
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -132,7 +132,8 @@ class UserListContainers extends Component {
         const {searchInfo} = this.props;
         const {addInfo} = this.props;
         const {cyLableList} = this.props;
-
+        const {blackList} = this.props;
+        
         const formItemLayout = {
             labelCol: { span: 5 },
             wrapperCol: { span: 20 },
@@ -221,7 +222,7 @@ class UserListContainers extends Component {
             </Form>
             <Row gutter={5}>
                     <Col span={2} style={{ textAlign: 'right' }}>
-                         <Button type="primary" htmlType="submit">黑名单管理</Button>
+                    <Button type="primary" onClick={() => blackList()}>黑名单管理</Button>
                     </Col>
 
                     <Col span={2} style={{ textAlign: 'right' }}>
@@ -256,5 +257,6 @@ export default connect((state) => {
     addInfo,
     getLable,
     addBlack,
-    cyLableList
+    cyLableList,
+    blackList
 })(UserListContainersInfo);

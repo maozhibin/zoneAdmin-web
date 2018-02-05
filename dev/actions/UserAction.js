@@ -45,6 +45,42 @@ async function getListInfo(dispatch, data) {
     }
 };
 
+
+export function getblack(data) {
+    return (dispatch) => {
+        return getblackList(dispatch, Object.assign({offset: 1, limit: 10}, data));
+    }
+}
+//用户黑名单列表
+async function getblackList(dispatch, data) {
+    try {
+        var json = await proRes(
+            {
+                url: `user/blackList?limit=`+data.limit+`&offset=`+data.offset,
+                type: 'post',
+                body: data
+            });
+        const list = [];
+        if (json.code == 200) {
+            const posts = json.object.page.rows;
+            for (var i = 0; i < posts.length; i++) {
+                list.push(posts[i]);
+             }
+        } else {
+            alert(json.message)
+        }
+        dispatch({
+            type: 'BLACKLIST', data: {
+                list: list,
+                total: json.object.page.total,
+            }
+        });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+
 export function ApplyLists(data) {
     return (dispatch) => {
         return getApplyList(dispatch, Object.assign({offset: 1, limit: 10}, data));
@@ -246,6 +282,37 @@ export function addBlack(data) {
         }
 }
 
+//删除用户黑名单
+export function deleteBlack(data) {
+    var dataValue = {
+        id:data,
+        black:0
+    }
+    return async (dispatch) => {
+        var msg = "你确定要将该用户删除黑名单";
+        if (confirm(msg) == true) {
+            try {
+                    const json = await proRes({
+                        url: `/user/editOrUpdateUser` ,
+                        type: 'post',
+                        body: dataValue
+                    });
+
+                    if (json.code ==200) {
+                       return getblackList(dispatch, Object.assign({offset: 0, limit: 10}));
+                    } else {
+                        alert(json.msg)
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }else{
+                return;
+            }
+        }
+}
+
+
 //审核信息页面
 export function VerifyPage(id) {
     return async (dispatch) => {
@@ -354,6 +421,17 @@ export function cyLableList(data) {
         var Data = {};
         var path = {
             pathname:'/public/module1/CyLable',
+            state:Data,
+        }
+        browserHistory.push(path);
+    }
+}
+//黑名单列表
+export function blackList(data) {
+    return async (dispatch) => {
+        var Data = {};
+        var path = {
+            pathname:'/public/module1/BlackUserList',
             state:Data,
         }
         browserHistory.push(path);

@@ -138,6 +138,9 @@ class CyLable extends Component {
                             required>
                             {getFieldDecorator('labelName', {
                                 initialValue:this.state.labelName,
+                                rules: [
+                                    { required: true, message: 'Please select your country!' },
+                                  ],
                             })(
                                 <Input id="control-input" placeholder="Please enter..." />
                             )}

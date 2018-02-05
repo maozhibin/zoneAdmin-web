@@ -20,6 +20,18 @@ const userList = buildReduce({
   list: [],
   total: 0,
 });
+
+const blackList = buildReduce({
+  BLACKLIST: (state, action) => {
+    return Object.assign({}, state, action.data);
+  }
+}, {
+  list: [],
+  total: 0,
+});
+
+
+
 const applayList = buildReduce({
   APPLIYLIST: (state, action) => {
     return Object.assign({}, state, action.data);
@@ -49,7 +61,8 @@ const userReducer = combineReducers({
   userList,
   applayList,
   verifyInfo,
-  cyLableCount
+  cyLableCount,
+  blackList
 });
 
 export default userReducer;
