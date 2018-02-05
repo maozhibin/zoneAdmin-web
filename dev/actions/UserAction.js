@@ -437,3 +437,86 @@ export function blackList(data) {
         browserHistory.push(path);
     }
 }
+
+
+//用户邀请信息
+export function iniviteInfo(data) {
+    return (dispatch) => {
+        return iniviteInfoList(dispatch, Object.assign({offset: 1, limit: 10}, data));
+    }
+}
+async function iniviteInfoList(dispatch, data) {
+    try {
+        var json = await proRes(
+            {
+                url: `user/userInviteInfoList?limit=`+data.limit+`&offset=`+data.offset,
+                type: 'post',
+                body: data
+            });
+        const list = [];
+        if (json.code == 200) {
+            const posts = json.object.page.rows;
+            for (var i = 0; i < posts.length; i++) {
+                list.push(posts[i]);
+             }
+        } else {
+            alert(json.message)
+        }
+        dispatch({
+            type: 'INIVITELIST', data: {
+                list: list,
+                total: json.object.page.total,
+            }
+        });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+//被用户邀请的信息列表
+export function queryIniviteUidUser(data) {
+    return (dispatch) => {
+        return queryIniviteUidUserList(dispatch, Object.assign({offset: 1, limit: 10}, data));
+    }
+}
+async function queryIniviteUidUserList(dispatch, data) {
+    try {
+        var json = await proRes(
+            {
+                url: `user/queryIniviteUidUser?limit=`+data.limit+`&offset=`+data.offset,
+                type: 'post',
+                body: data
+            });
+        const list = [];
+        if (json.code == 200) {
+            const posts = json.object.page.rows;
+            for (var i = 0; i < posts.length; i++) {
+                list.push(posts[i]);
+             }
+        } else {
+            alert(json.message)
+        }
+        dispatch({
+            type: 'INIVITELISTUSER', data: {
+                list: list,
+                total: json.object.page.total,
+            }
+        });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+export function byIniviteIdList(data) {
+    return async (dispatch) => {
+        var Data = {
+            inviteUid:data
+        };
+        var path = {
+            pathname:'/public/module1/QueryIniviteUidUser',
+            state:Data,
+        }
+        browserHistory.push(path);
+    }
+}
+

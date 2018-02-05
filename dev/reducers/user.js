@@ -21,6 +21,23 @@ const userList = buildReduce({
   total: 0,
 });
 
+const iniviteList = buildReduce({
+  INIVITELIST: (state, action) => {
+    return Object.assign({}, state, action.data);
+  }
+}, {
+  list: [],
+  total: 0,
+});
+const iniviteListuser = buildReduce({
+  INIVITELISTUSER: (state, action) => {
+    return Object.assign({}, state, action.data);
+  }
+}, {
+  list: [],
+  total: 0,
+});
+
 const blackList = buildReduce({
   BLACKLIST: (state, action) => {
     return Object.assign({}, state, action.data);
@@ -62,7 +79,9 @@ const userReducer = combineReducers({
   applayList,
   verifyInfo,
   cyLableCount,
-  blackList
+  blackList,
+  iniviteList,
+  iniviteListuser
 });
 
 export default userReducer;

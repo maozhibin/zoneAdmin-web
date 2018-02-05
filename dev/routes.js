@@ -11,6 +11,9 @@ import TwitterList from './containers/twitter/TwitterList';
 import Verify from './containers/user/Verify'
 import CyLable from './containers/lable/CyLable'
 import BlackUserList from './containers/user/BlackUserList'
+import UserInviteInfoList from './containers/user/UserInviteInfoList'
+import QueryIniviteUidUser from './containers/user/QueryIniviteUidUser'
+
 export default (
   <Route path="/" component={Index}>
     <IndexRoute component={Login}/>
@@ -23,6 +26,8 @@ export default (
         <Route path="Verify" component={Verify} />
         <Route path="CyLable" component={CyLable} />
         <Route path="BlackUserList" component={BlackUserList} />
+        <Route path="UserInviteInfoList" component={UserInviteInfoList} />
+        <Route path="QueryIniviteUidUser" component={QueryIniviteUidUser} />
       </Route>
       <Route path="module2">
       <Route path="TwitterList" component={TwitterList} />

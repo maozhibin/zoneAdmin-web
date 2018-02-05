@@ -8,6 +8,7 @@ const Search = Input.Search;
 const FormItem = Form.Item;
 const MonthPicker = DatePicker.MonthPicker;
 const RangePicker = DatePicker.RangePicker;
+var baserUrl=`http://zone-admin.test.upcdn.net`
 class TwitterList extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +26,7 @@ class TwitterList extends Component {
         },{
                 title: '图片',
                 width:'10%',
-                render: (record) => <img src={record.icon} style={{ width: '30%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
+                render: (record) => <img src={baserUrl+record.icon} style={{ width: '30%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
         },{
             title: '创建者',
             dataIndex: 'nickName',
