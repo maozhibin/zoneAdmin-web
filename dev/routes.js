@@ -13,6 +13,7 @@ import CyLable from './containers/lable/CyLable'
 import BlackUserList from './containers/user/BlackUserList'
 import UserInviteInfoList from './containers/user/UserInviteInfoList'
 import QueryIniviteUidUser from './containers/user/QueryIniviteUidUser'
+import ActivityList from './containers/twitter/ActivityList'
 
 export default (
   <Route path="/" component={Index}>
@@ -31,6 +32,7 @@ export default (
       </Route>
       <Route path="module2">
       <Route path="TwitterList" component={TwitterList} />
+      <Route path="ActivityList" component={ActivityList}/>
       </Route>
     </Route>
     <Route path="login" component={Login} />

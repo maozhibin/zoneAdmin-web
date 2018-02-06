@@ -84,6 +84,7 @@ class Public extends Component {
 
             <SubMenu key="module2" onTitleClick={this.subMenuClick} title={<span><Icon type="copy" /><span>帖子配置</span></span>}>
               <Menu.Item key="/public/module2/TwitterList">文字帖列表</Menu.Item>
+              <Menu.Item key="/public/module2/ActivityList">活动贴列表</Menu.Item>
             </SubMenu>
           </Menu>
         </Sider>

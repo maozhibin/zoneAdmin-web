@@ -3,13 +3,13 @@ import {browserHistory} from 'react-router';
 
 export function getData(data) {
     return (dispatch) => {
-        return getListInfo(dispatch, Object.assign({pageNo: 1, pageSize: 10}, data));
+        return getListInfo(dispatch, Object.assign({offset: 1, limit: 10}, data));
     }
 }
 //帖子列表
 async function getListInfo(dispatch, data) {
     try {
-        var json = await proRes({url: `twitter/twitterList`, type: 'post', body: data});
+        var json = await proRes({url: `twitter/twitterList?limit=`+data.limit+`&offset=`+data.offset,type: 'post', body: data});
         const list = [];
         if (json.code == 200) {
             const posts = json.object.page.rows;
@@ -24,13 +24,13 @@ async function getListInfo(dispatch, data) {
                     posts[i].twitterTypeName=`投票贴`;
                 }
                 if(posts[i].pushStatus==0){
-                    posts[i].pushStatusValue=`已结发布`;
+                    posts[i].pushStatusValue=`已经发布`;
                 }else if(posts[i].pushStatus==1){
-                    posts[i].pushStatusValue=`隐藏`;
+                    posts[i].pushStatusValue=`审核中`;
                 }else if(posts[i].pushStatus==2){
-                    posts[i].pushStatusValue=`草稿`;
-                }else if(posts[i].pushStatus==3){
-                    posts[i].pushStatusValue=`删除`;
+                    posts[i].pushStatusValue=`审核未通过`;
+                }else if(posts[i].pushStatus==-1){
+                    posts[i].pushStatusValue=`隐藏`;
                 }
                 list.push(posts[i]);
              }
@@ -47,4 +47,80 @@ async function getListInfo(dispatch, data) {
         console.log(e);
     }
 };
+//修改审核状态
+export function updatePushStatus(id,pushStatus,type) {
+    var data={
+        id:id,
+        pushStatus:pushStatus
+    };
+
+    var dataValue={}
+
+    if(type == "default"){
+        dataValue={
+            twitterType:'default'
+        }
+    }else{
+        dataValue={
+            twitterType:'activity'
+        }
+    }
+
+    return async (dispatch) => {
+        var msg = "你确定要修改？";
+        if (confirm(msg) == true) {
+            try {
+                const json = await proRes({
+                    url: `/twitter/updatePushStatus` ,
+                    type: 'post',
+                    body: data
+                });
+                if (json.code ==200) {
+                    return getListInfo(dispatch, Object.assign({offset: 1, limit: 10}, dataValue));
+                } else {
+                    alert(json.msg)
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }else{
+            return;
+        }
+    }
+}
+//删除
+export function deleteInfo(id,type) {
+     var dataValue={};
+
+    if(type == "default"){
+        dataValue={
+            twitterType:'default'
+        }
+    }else{
+        dataValue={
+            twitterType:'activity'
+        }
+    }
+    return async (dispatch) => {
+        var msg = "你确定要删除吗?";
+        if (confirm(msg) == true) {
+            try {
+                const json = await proRes({
+                    url: `/twitter/delete?id=`+id,
+                    type: 'post',
+                    body:``
+                });
+                if (json.code ==200) {
+                    return getListInfo(dispatch, Object.assign({offset: 1, limit: 10}, dataValue));
+                } else {
+                    alert(json.msg)
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }else{
+            return;
+        }
+    }
+}
 

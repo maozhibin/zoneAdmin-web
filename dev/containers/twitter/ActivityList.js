@@ -9,34 +9,33 @@ const FormItem = Form.Item;
 const MonthPicker = DatePicker.MonthPicker;
 const RangePicker = DatePicker.RangePicker;
 var baserUrl=`http://zone-admin.test.upcdn.net`
-class TwitterList extends Component {
+class ActivityList extends Component {
     constructor(props) {
         super(props);
         this.state = {
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.changePage = this.changePage.bind(this);
-        this.changePage(1, 10,`default`);
+        this.changePage(1, 10,`activity`);
         this.columns = [{
-            title: 'ID',
-            dataIndex: 'id',
-        },{
             title: '标题',
             dataIndex: 'title',
         },{
-                title: '图片',
-                width:'10%',
-                render: (record) => <img src={baserUrl+record.icon} style={{ width: '30%' }}/>//这里放后台返回的图片的路径或者整个<img/>  
+            title: '时间',
+            dataIndex: 'activityTime',
+        },,{
+            title: '地点',
+            dataIndex: 'activityArea',
         },{
-            title: '创建者',
-            dataIndex: 'nickName',
+            title: '主办方',
+            dataIndex: 'sponsor',
         },{
             title: '内容',
             dataIndex: 'content',
             width:'40%',
             render: (text) => <span className="col-sql" title={text}>{text}</span>,
         },{
-            title: '发帖时间',
+            title: '创建时间',
             render: (record) =><span className="ant-form-text">{moment(record.createdTime).format("YYYY-MM-DD HH:mm:ss")}</span> 
         },{
             title: '帖子状态',
@@ -51,25 +50,25 @@ class TwitterList extends Component {
                     <span>
                         {
                             record.pushStatus == -1 ?
-                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,0,`default`)}>显示</Button> :''
+                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,0,`activity`)}>显示</Button> :''
                         }
                         {
                             record.pushStatus == 0 ?
-                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,-1,`default`)}>隐藏</Button> :''
+                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,-1,`activity`)}>隐藏</Button> :''
                         }
                         {
                             record.pushStatus == 1 ?
-                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,0,`default`)}>审核通过发布</Button> :''
+                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,0,`activity`)}>审核通过发布</Button> :''
                         }
                         {
                             record.pushStatus == 1 ?
-                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,2,`default`)}>拒绝通过</Button> :''
+                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,2,`activity`)}>拒绝通过</Button> :''
                         }
                         {
                             record.pushStatus == 2 ?
-                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,0,`default`)}>重新审核通过发布</Button> :''
+                            <Button type="primary" style={{marginLeft: 8}} onClick={() => updatePushStatus(record.id,0,`activity`)}>重新审核通过发布</Button> :''
                         }
-                         <Button type="danger" style={{marginLeft: 8}}  onClick={() => deleteInfo(record.id,`default`)}>删除</Button>
+                         <Button type="danger" style={{marginLeft: 8}}  onClick={() => deleteInfo(record.id,`activity`)}>删除</Button>
                    </span>
                 );
             },
@@ -81,7 +80,7 @@ class TwitterList extends Component {
     }
 
     changePage(pageNo, pageSize,twitterType) {
-        this.props.getData({offset: pageNo, limit: pageSize,twitterType:'default'});
+        this.props.getData({offset: pageNo, limit: pageSize,twitterType:'activity'});
     }
 
     handleSubmit(e) {
@@ -194,7 +193,7 @@ class TwitterList extends Component {
         );
     }
 }
-const TwitterListInfo = Form.create()(TwitterList);
+const ActivityListInfo = Form.create()(ActivityList);
 export default connect((state) => {
     return {
         twitterList: state.twitterReducer.twitterList,
@@ -204,4 +203,4 @@ export default connect((state) => {
     getData,
     updatePushStatus,
     deleteInfo
-})(TwitterListInfo);
+})(ActivityListInfo);
